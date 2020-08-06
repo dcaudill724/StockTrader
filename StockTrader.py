@@ -22,6 +22,7 @@ class StockBot :
 
         #Settings
         self.movingAverageDays = 200
+        self.movingAverage = 0.0
 
         #Used to keep track of time if the api requires
         self.lastTime = float(datetime.datetime.now().second)
@@ -39,23 +40,28 @@ class StockBot :
         self.lastTime = float(datetime.datetime.now().second)
         #print(self.api.get_account())
     
+    #used to calculate the 200 day moving average
     def calculate_moving_averages(self):
-        for stock in self.stockdata:
+        for stockHistory in self.stockdata:
             sum = 0.0
             denominator = 0.0
-            print(stock)
-            for i in range(len(stock)):
-                return
-                #print(i)
-                #print(stock[i])
-            #open, high, low, close are being average and they are indecies 0,1,2,3
-            #for openday in stock:
-             #   for i in range(4):
-              #      print(openday[)
-               #     #sum += float(openday[i])
-                #denominator += 4.0
             
-        print(str(sum) + " : " + str(denominator))
+            for j in stockHistory['high']:
+                sum += float(j)
+                denominator += 1
+            for j in stockHistory['low']:
+                sum += float(j)
+                denominator += 1
+            for j in stockHistory['open']:
+                sum += float(j)
+                denominator += 1
+            for j in stockHistory['close']:
+                sum += float(j)
+                denominator += 1
+
+            self.movingAverage = sum / denominator
+
+            print(str(sum) + " / " + str(denominator) + " = " + str(self.movingAverage) + " : " + stockHistory["ticker"][0])
 
     def fetch_stock_data(self):
         today = datetime.datetime.now().date()
